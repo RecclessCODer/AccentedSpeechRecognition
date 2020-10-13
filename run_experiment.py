@@ -1,6 +1,5 @@
 from dataloader import MultiDataset, MultiDataLoader
 from focalloss import FocalLoss
-from warpctc_pytorch import CTCLoss
 from model import MultiTask
 from decoder import GreedyDecoder, BeamCTCDecoder
 from training import train, test
@@ -22,7 +21,8 @@ print(f'Using torch manual seed {manual_seed}.')
 min_ = 0
 if min_ > 0:
     print(f'WARNING TIMER {min_} min')
-    import time ; from tqdm import tqdm
+    import time
+    from tqdm import tqdm
     for __ in tqdm(range(min_)):
         time.sleep(60)
 ###
@@ -155,9 +155,9 @@ def run_experiment(_exp_name,
     if not _use_transcripts_out: # only accent classification
         criterion = AccLoss
     elif not _use_accents_out: # only text recognition
-        criterion = CTCLoss()
+        criterion = nn.CTCLoss()
     else: # both tasks
-        criterion = (CTCLoss(), FocalLoss())
+        criterion = (nn.CTCLoss(), FocalLoss())
         
     # Decoder
     if _use_transcripts_out:
