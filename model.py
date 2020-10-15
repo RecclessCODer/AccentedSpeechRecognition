@@ -47,7 +47,6 @@ class Head(nn.Module):
 
         self.rnns = rnn_block(rnn_input_size, rnn_hidden_size, rnn_type, bidirectional, nb_layers)
 
-
     def forward(self, x, lengths):
         if self._DEBUG:
             print('')

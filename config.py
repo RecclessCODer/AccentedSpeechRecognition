@@ -1,6 +1,7 @@
 import collections
 import torch.nn as nn
 
+
 class Config(collections.MutableMapping):
     """A dictionary that applies an arbitrary key-altering
        function before accessing the keys"""
@@ -12,7 +13,7 @@ class Config(collections.MutableMapping):
         with open(config_path, 'r') as f:
             confs = {}
             for l in f.readlines():
-                if (l[0] is not '#') and (l[0] is not '\n'): # remove comments and empty lines
+                if (l[0] is not '#') and (l[0] is not '\n'):  # remove comments and empty lines
                     sep_idx = l.find(sep)
                     confs[l[:sep_idx]] = eval(l[sep_idx+1:])
             self.update(confs)
@@ -41,7 +42,6 @@ class Config(collections.MutableMapping):
     def __repr__(self):
         return self.store.__repr__()
 
-    
 #    def create_multi_dict(self):
 #        """ Not recomended, please use the patch_config method instead
 #        """
@@ -60,7 +60,7 @@ class Config(collections.MutableMapping):
 #            prev_configs = new_configs
 #                
 #        return new_configs
-    
+
     def patch_config(self, patch_path, patch_sep='!', sep=' '):
         """Takes a file with config patches separated by a line 
         starting with the 'patch_sep' argument.
@@ -87,4 +87,5 @@ class Config(collections.MutableMapping):
         [store.update(conf) for conf, store in zip(new_configs, final_configs)]
         
         return final_configs if len(final_configs) > 0 else self.store
-            
+
+
