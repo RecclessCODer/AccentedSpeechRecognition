@@ -6,11 +6,11 @@ class Config(collections.MutableMapping):
     """A dictionary that applies an arbitrary key-altering
        function before accessing the keys"""
 
-    def __init__(self, config_path='./default_config.cfg', sep=' ', *args, **kwargs):
+    def __init__(self, config_path='./custom_config.cfg', sep=' ', *args, **kwargs):
         self.store = dict()
         self.update(dict(*args, **kwargs))  # use the free update to set keys
         
-        with open(config_path, 'r') as f:
+        with open(config_path, 'r', encoding='UTF-8') as f:
             confs = {}
             for l in f.readlines():
                 if (l[0] is not '#') and (l[0] is not '\n'):  # remove comments and empty lines

@@ -86,6 +86,9 @@ def run_experiment(_exp_name,
                                  use_transcripts_out=_use_transcripts_out,
                                  use_accents_out=_use_accents_out)
 
+
+
+"""
     train_loader = MultiDataLoader(train_dataset,
                                    batch_size=_batch_size,
                                    shuffle=True,
@@ -231,7 +234,7 @@ def run_experiment(_exp_name,
     torch.cuda.empty_cache()
     ### end of run_experiment ###
 
-
+"""
 ### MAIN
 
 if __name__ == '__main__':

@@ -43,7 +43,8 @@ class MultiDataset(Dataset):
 
         self.labels_map = dict([(labels[i], i) for i in range(len(labels))])  # labels dictionary
 
-        with open(manifest) as f:
+        with open(manifest, encoding='UTF-8') as f:  # add encoding config
+            self.data_key = f.readline().strip().split(manifest_separator)  # keys' names
             self.samples = [x.strip().split(manifest_separator) for x in f.readlines()]  # x samples list
 
         self.accent_dict = self.make_accent_dict(self.samples)
@@ -99,7 +100,7 @@ class MultiDataset(Dataset):
     @staticmethod
     def make_accent_dict(samples):
         acc_set = set()
-        for __, __, __, __, accent in samples:
+        for __, __, __, __, __, __, __, accent, __, in samples:
             acc_set.add(accent)
         enum = enumerate(sorted(acc_set))  # sorted set for consistent results
         return {acc: i for i, acc in enum}
