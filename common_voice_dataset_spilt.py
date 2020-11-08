@@ -1,10 +1,21 @@
 import random
+import os
+
+
+"""
+script function: use cv-corpus-5.1-2020-06-22 English corpus. 
+split it by using accent labels.
+using four manifest, train, test, dev and validated manifest.
+16 accents, 2 accents scotland, ireland as unseen test set, others as train, dev and test.
+split these into train_data, dev_data, test_data, test_scotland, test_ireland
+"""
 
 
 def read_manifest(path):
     """
     read manifest into samples data
     """
+    segment = ""
     with open(path, encoding='UTF-8') as f:
         f.readline()
         # data_key = f.readline().strip().split('\t')  # keys' names
@@ -16,14 +27,13 @@ def read_manifest(path):
     return data
 
 
-def count_accent(_dev_data, _train_data, _test_data, _validated_data):
+def count_accent(manifest):
     """
-    count accents in all spilt manifest
+    count accents in all manifests
     """
     acc_set = set()
-    for manifest in _dev_data, _train_data, _test_data, _validated_data:
-        for __, __, __, __, __, __, __, accent, __, __, in manifest:
-            acc_set.add(accent)
+    for __, __, __, __, __, __, __, accent, __, __, in manifest:
+        acc_set.add(accent)
     acc_set.remove("")  # no usage in accent speech recognition, delete
     acc_set.remove("other")
     enum = enumerate(sorted(acc_set))  # sorted set for consistent results
@@ -33,7 +43,7 @@ def count_accent(_dev_data, _train_data, _test_data, _validated_data):
 
 def count_speaker(manifest):
     """
-    count number of speakers
+    count the number of speakers
     """
     speaker_set = set()
     for speaker, __, __, __, __, __, __, __, __, __, in manifest:
@@ -43,26 +53,25 @@ def count_speaker(manifest):
     return speaker_dic
 
 
-def statistic_accent(_dev_data, _train_data, _test_data, _validated_data, _accent_set):
+def statistic_accent(manifest, _accent_dic, _accent_set):
     """
     count accent sentence for each accents.
     """
-    all_data = dev_data + train_data + test_data + validated_data
-    all_accent_data = []
-    accent_sentence_count = accent_dic.copy()  # create a dict of {accents: numbers of sentences}
-    for accent_name in accent_dic.keys():
-        accent_sentence_count[accent_name] = 0  # initial count number
-    for i in range(0, len(all_data)):
-        no, no, no, no, no, no, no, a, no, no, = all_data[i]
+    _all_accent_data = []
+    count = _accent_dic.copy()  # create a dict of {accents: numbers of sentences}
+    for accent_name in _accent_dic.keys():
+        count[accent_name] = 0  # initial count number
+    for i in range(0, len(manifest)):
+        no, no, no, no, no, no, no, a, no, no, = manifest[i]
         if a in _accent_set:
-            all_accent_data.append(all_data[i])  # create a manifest with accent labels
-            accent_sentence_count[a] = accent_sentence_count[a] + 1  # count numbers of accent sentences
-    return all_accent_data, accent_sentence_count
+            _all_accent_data.append(all_data[i])  # create a manifest with accent labels
+            count[a] = count[a] + 1  # count numbers of accent sentences
+    return _all_accent_data, count
 
 
-def spilt_manifest(all_acc_data):
+def split_manifest(all_acc_data):
     """
-    spilt data into five data, train_accent_data 90%, dev_accent_data 5%, test_accent_data 5%
+    split data into five data, train_accent_data 90%, dev_accent_data 5%, test_accent_data 5%
     test_scotland_data, test_ireland_data.
     """
     refine_data = []  # stored data except scotland data and ireland data
@@ -88,7 +97,8 @@ def spilt_manifest(all_acc_data):
 
 def write_manifest(manifest, name):
     """
-    write manifest into a tsv format, stored in data/
+    write manifest into a tsv format.
+    stored in data/
     """
     f = open('./data/' + name, 'w', encoding='UTF-8')
     for i in range(0, len(manifest)):
@@ -104,20 +114,22 @@ dev_manifest_path = '../cv-corpus-5.1-2020-06-22/en/dev.tsv'
 train_manifest_path = '../cv-corpus-5.1-2020-06-22/en/train.tsv'
 test_manifest_path = '../cv-corpus-5.1-2020-06-22/en/test.tsv'
 validated_manifest_path = '../cv-corpus-5.1-2020-06-22/en/validated.tsv'
-segment = ""
 
 dev_data = read_manifest(dev_manifest_path)
 train_data = read_manifest(train_manifest_path)
 test_data = read_manifest(test_manifest_path)
 validated_data = read_manifest(validated_manifest_path)
+all_data = dev_data + train_data + test_data + validated_data
 
-accent_dic, accent_set = count_accent(dev_data, train_data, test_data, validated_data)  # count accents number
+accent_dic, accent_set = count_accent(all_data)  # count the number of accents
+print("------ accents structure ------")
 print(accent_dic)
-new_accent_data, accent_sentence_num = statistic_accent(dev_data, train_data, test_data, validated_data, accent_set)
-# count sentences for each accent
-print(accent_sentence_num)
-train_data, dev_data, test_data, test_scotland, test_ireland = spilt_manifest(new_accent_data)
-print(len(train_data), len(dev_data), len(test_data), len(test_scotland), len(test_ireland))
+all_accent_data, accent_sentence_count = statistic_accent(all_data, accent_dic, accent_set)
+# count number of sentences for each accent
+print("------ the number of sentences in each accent ------")
+for key, value in accent_sentence_count.items():
+    print(key, value)
+train_data, dev_data, test_data, test_scotland, test_ireland = split_manifest(all_accent_data)
 
 # write into tsv format
 write_manifest(train_data, 'train_accent_manifest.tsv')
@@ -125,3 +137,4 @@ write_manifest(dev_data, 'dev_accent_manifest.tsv')
 write_manifest(test_data, 'test_accent_manifest.tsv')
 write_manifest(test_scotland, 'test_scotland_accent_manifest.tsv')
 write_manifest(test_ireland, 'test_ireland_accent_manifest.tsv')
+print("------ finished split ------")
