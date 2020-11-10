@@ -175,7 +175,7 @@ print("train_data_t size: ", len(train_data_t), " dev_data_t size: ", len(dev_da
       " test_data_t size: ", len(test_data_t), " test_scot_t size: ", len(test_scot_t),
       " test_ire_t size: ", len(test_ire_t))
 
-"""
+
 # write into tsv format
 write_manifest(train_data, 'train_accent_manifest.tsv')
 write_manifest(dev_data, 'dev_accent_manifest.tsv')
@@ -188,4 +188,4 @@ write_manifest(test_data_t, 'test_accent_t_manifest.tsv')
 write_manifest(test_scot_t, 'test_scotland_accent_t_manifest.tsv')
 write_manifest(test_ire_t, 'test_ireland_accent_t_manifest.tsv')
 print("------ finished split ------")
-"""
+
