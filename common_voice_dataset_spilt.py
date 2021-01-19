@@ -1,4 +1,5 @@
 import random
+from utils import read_manifest, write_manifest
 import os
 
 """
@@ -8,24 +9,6 @@ using four manifest, train, test, dev and validated manifest.
 16 accents, 2 accents scotland, ireland as unseen test set, others as train, dev and test.
 split these into train_data, dev_data, test_data, test_scotland, test_ireland
 """
-
-
-def read_manifest(path):
-    """
-    read manifest into samples data
-    """
-    small_data = []
-    segment = ""
-    with open(path, encoding='UTF-8') as f:
-        f.readline()
-        # data_key = f.readline().strip().split('\t')  # keys' names
-        data = [line.strip().split('\t') for line in f.readlines()]  # samples list
-    # append an empty segment string to which does not have one, to keep the size of info same.
-    for x in range(0, len(data)):
-        if len(data[x]) == 9:
-            data[x].append(segment)
-
-    return data
 
 
 def count_accent(manifest):
@@ -103,40 +86,19 @@ def create_tiny_dataset(data, _accent_set):
     create a comparatively small one of the giant dataset.
     origin size 770,629 - > cut size 70,000
     """
-    acc_data_tiny = []
-    ratio = 0.1
     # cut the data by cutting every accent data with same ratio
-    for a in _accent_set:
-        a_data = []
-        for i in range(0, len(data)):
-            no, no, no, no, no, no, no, b, no, no = data[i]
-            if b == a:
-                a_data.append(data[i])  # create a dataset with specific accent
-        shuffled_data = random.sample(a_data, len(a_data))  # shuffle the a_data and split it
-        acc_data_tiny = acc_data_tiny + (shuffled_data[0: int(ratio * len(shuffled_data))])
-        # cut and save in acc_data_tiny
+    ratio = 0.1
+    shuffled_data = random.sample(data, len(data))  # shuffle the a_data and split it
+    acc_data_tiny = (shuffled_data[0: int(ratio * len(shuffled_data))])
+    # cut and save in acc_data_tiny
     return acc_data_tiny
-
-
-def write_manifest(manifest, name):
-    """
-    write manifest into a tsv format.
-    stored in data/
-    """
-    f = open('./data/' + name, 'w', encoding='UTF-8')
-    for i in range(0, len(manifest)):
-        line = manifest[i][0]
-        for j in range(1, len(manifest[i])):  # create tsv format lines
-            line = line + '\t' + manifest[i][j]
-        f.writelines(line)
-        f.writelines('\n')
-    return 0
 
 
 dev_manifest_path = '../cv-corpus-5.1-2020-06-22/en/dev.tsv'
 train_manifest_path = '../cv-corpus-5.1-2020-06-22/en/train.tsv'
 test_manifest_path = '../cv-corpus-5.1-2020-06-22/en/test.tsv'
 validated_manifest_path = '../cv-corpus-5.1-2020-06-22/en/validated.tsv'
+_mp3_path = '..//cv-corpus-5.1-2020-06-22/en/clips/'
 
 dev_data = read_manifest(dev_manifest_path)
 train_data = read_manifest(train_manifest_path)
@@ -144,6 +106,7 @@ test_data = read_manifest(test_manifest_path)
 validated_data = read_manifest(validated_manifest_path)
 all_data = dev_data + train_data + test_data + validated_data
 
+# remove those lines which do not have mp3 reference
 print("###### accent data ######")
 print("size:", len(all_data))
 accent_dic, accent_set = count_accent(all_data)  # count the number of accents
@@ -156,8 +119,8 @@ print(accent_sentence_count)
 train_data, dev_data, test_data, test_scot, test_ire = split_manifest(all_accent_data)
 print("------ split data structure ------")
 print("train_data size: ", len(train_data), " dev_data size: ", len(dev_data),
-      " test_data size: ", len(test_data), " test_scot size: ", len(test_scot),
-      " test_ire size: ", len(test_ire))
+" test_data size: ", len(test_data), " test_scot size: ", len(test_scot),
+" test_ire size: ", len(test_ire))
 
 # tiny data cut from origin one.
 print("###### tiny data ######")
@@ -169,11 +132,11 @@ print(accent_dic)
 all_accent_data_t, accent_sentence_count_t = statistic_accent(all_data_t, accent_dic, accent_set)
 print("------ the number of sentences in each accent ------")
 print(accent_sentence_count_t)
-train_data_t, dev_data_t, test_data_t, test_scot_t, test_ire_t = split_manifest(all_accent_data_t)
+train_data_t, dev_data_t, test_data_t, test_scot_t, test_ire_t = split_manifest(all_data_t)
 print("------ split data structure ------")
 print("train_data_t size: ", len(train_data_t), " dev_data_t size: ", len(dev_data_t),
-      " test_data_t size: ", len(test_data_t), " test_scot_t size: ", len(test_scot_t),
-      " test_ire_t size: ", len(test_ire_t))
+" test_data_t size: ", len(test_data_t), " test_scot_t size: ", len(test_scot_t),
+" test_ire_t size: ", len(test_ire_t))
 
 
 # write into tsv format

@@ -15,16 +15,16 @@ class MultiDataset(Dataset):
     the MultiDataLoader class.
     """
 
-    def __init__(self, manifest, labels, manifest_separator='\t',  # modify manifest_separator , -> \t
+    def __init__(self, manifest, labels, manifest_separator=',',  # modify manifest_separator , -> ,
                use_mfcc_in=True, use_ivectors_in=False, use_embeddings_in=False,
                embedding_size=100, use_transcripts_out=True, use_accents_out=False):
         """
         Allows to chose what will be trained on, and what are the outputs.
-        At least on input and one output is needed.
+        At least one input and one output is needed.
         Default configuration is regular MFCCs to text.
         
         Manifest should be csv type file with following row for each sample:
-        mfcc_path, ivector_path, embedding_path, transcripts_path, accent_label
+        mfcc_path, transcripts_path, ivector_path, embedding_path, accent_label
         (Column can remain empty if not used, but must be present.)
         
         Scripts to create the database and manifest from audio and text in the scripts folder.
@@ -44,15 +44,15 @@ class MultiDataset(Dataset):
         self.labels_map = dict([(labels[i], i) for i in range(len(labels))])  # labels dictionary
 
         with open(manifest, encoding='UTF-8') as f:  # add encoding config
-            self.data_key = f.readline().strip().split(manifest_separator)  # keys' names
+            # self.data_key = f.readline().strip().split(manifest_separator)  # keys' names
             self.samples = [x.strip().split(manifest_separator) for x in f.readlines()]  # x samples list
 
         self.accent_dict = self.make_accent_dict(self.samples)
 
     def __getitem__(self, index):
         """Unused features are set to None for the Dataloader. Returns torch tensors."""
-        mfcc_path, ivector_path, embedding_path, transcript_path, accent_label = self.samples[index]
-        mfcc, ivector, embedding, parsed_transcript, accent = None, None, None, None, None
+        mfcc_path, transcript_path, ivector_path, embedding_path, accent_label = self.samples[index]
+        mfcc, parsed_transcript, ivector, embedding, accent = None, None, None, None, None
 
         def load_array(path):
             with open(path) as f:
@@ -100,7 +100,8 @@ class MultiDataset(Dataset):
     @staticmethod
     def make_accent_dict(samples):
         acc_set = set()
-        for __, __, __, __, __, __, __, accent, __, in samples:
+        for element in samples:
+            accent = element[4]
             acc_set.add(accent)
         enum = enumerate(sorted(acc_set))  # sorted set for consistent results
         return {acc: i for i, acc in enum}

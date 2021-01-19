@@ -2,6 +2,7 @@ import torch
 import numpy as np
 import time
 
+
 def tile(a, dim, n_tile):
     """Expands a tensor amongst a given dimension, repeating its components."""
     init_dim = a.size(dim)
@@ -13,5 +14,39 @@ def tile(a, dim, n_tile):
         order_index = order_index.cuda()
     return torch.index_select(a, dim, order_index)
 
+
 def now_str():
     return time.strftime("%d-%m-%Y_%Hh%Mm%S")
+
+
+def read_manifest(path):
+    """
+    read tsv manifest into samples data
+    """
+    small_data = []
+    segment = ""
+    with open(path, encoding='UTF-8') as f:
+        f.readline()
+        # data_key = f.readline().strip().split('\t')  # keys' names
+        data = [line.strip().split('\t') for line in f.readlines()]  # samples list
+    # append an empty segment string to which does not have one, to keep the size of info same.
+    for x in range(0, len(data)):
+        if len(data[x]) == 9:
+            data[x].append(segment)
+    return data
+
+
+def write_manifest(manifest, name):
+    """
+    write manifest into a tsv format.
+    stored in data/
+    """
+    f = open('./data/' + name, 'w', encoding='UTF-8')
+    for i in range(0, len(manifest)):
+        line = manifest[i][0]
+        for j in range(1, len(manifest[i])):  # create tsv format lines
+            line = line + '\t' + manifest[i][j]
+        f.writelines(line)
+        f.writelines('\n')
+    return 0
+
