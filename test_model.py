@@ -8,7 +8,6 @@ from focalloss import FocalLoss
 from warpctc_pytorch import CTCLoss
 from decoder import GreedyDecoder, BeamCTCDecoder
 import sys
-import sys
 from pathlib import Path
 
 PRINT_LATEX_TABLE = True
