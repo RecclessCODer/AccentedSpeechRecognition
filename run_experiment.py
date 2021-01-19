@@ -86,9 +86,6 @@ def run_experiment(_exp_name,
                                  use_transcripts_out=_use_transcripts_out,
                                  use_accents_out=_use_accents_out)
 
-
-
-"""
     train_loader = MultiDataLoader(train_dataset,
                                    batch_size=_batch_size,
                                    shuffle=True,
@@ -156,7 +153,6 @@ def run_experiment(_exp_name,
     else:  # both tasks
         criterion = (nn.CTCLoss(), FocalLoss())
 
-    # Decoder
     if _use_transcripts_out:
         decoder = BeamCTCDecoder(_labels,
                                  lm_path=_lm_path,
@@ -167,7 +163,7 @@ def run_experiment(_exp_name,
                                  beam_width=_decoder_beam_width,
                                  num_processes=_num_workers)
 
-        target_decoder = GreedyDecoder(_labels)
+        # target_decoder = GreedyDecoder(_labels)
     else:
         decoder, target_decoder = None, None
 
@@ -234,7 +230,7 @@ def run_experiment(_exp_name,
     torch.cuda.empty_cache()
     ### end of run_experiment ###
 
-"""
+
 ### MAIN
 
 if __name__ == '__main__':
