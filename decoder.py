@@ -114,6 +114,7 @@ class BeamCTCDecoder(Decoder):
             results.append(utterances)
         return results
 
+
     def convert_tensor(self, offsets, sizes):
         results = []
         for b, batch in enumerate(offsets):
