@@ -163,7 +163,7 @@ def run_experiment(_exp_name,
                                  beam_width=_decoder_beam_width,
                                  num_processes=_num_workers)
 
-        # target_decoder = GreedyDecoder(_labels)
+        target_decoder = GreedyDecoder(_labels)
     else:
         decoder, target_decoder = None, None
 
