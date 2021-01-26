@@ -25,6 +25,10 @@ def write_csv_manifest(manifest, name):
     return 0
 
 
+def name_str(obj, namespace):
+    return [name for name in namespace if namespace[name] is obj]
+
+
 dev_data = read_csv_manifest('../../cv_corpus_v1/dev.csv')
 train_data = read_csv_manifest('../../cv_corpus_v1/train.csv')
 test_data = read_csv_manifest('../../cv_corpus_v1/test.csv')
@@ -36,5 +40,5 @@ for e_data in dev_data, train_data, test_data:
         temp = element[2]
         element[2] = element[4]
         element[4] = temp
-    write_csv_manifest(e_data, 'list_' + namestr(e_data, globals())[0])
+    write_csv_manifest(e_data, 'list_' + name_str(e_data, globals())[0])
 
