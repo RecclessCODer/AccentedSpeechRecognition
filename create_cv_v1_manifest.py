@@ -1,31 +1,7 @@
 import json
 import librosa
 import pydub
-
-
-def read_csv_manifest(path):
-    """
-    read csv manifest into samples data
-    """
-    with open(path, encoding='UTF-8') as f:
-        data = [line.strip().split(',') for line in f.readlines()]  # samples list
-    # append an empty segment string to which does not have one, to keep the size of info same.
-    return data
-
-
-def write_csv_manifest(manifest, name):
-    """
-    write manifest into a csv format.
-    stored in ../../cv_corpus_v1/
-    """
-    f = open('../../cv_corpus_v1/' + name, 'w', encoding='UTF-8')
-    for i in range(0, len(manifest)):
-        line = manifest[i][0]
-        for j in range(1, len(manifest[i])):  # create csv format lines
-            line = line + ',' + manifest[i][j]
-        f.writelines(line)
-        f.writelines('\n')
-    return 0
+from utils import read_csv_manifest, write_csv_manifest
 
 
 def create_manifest(data):

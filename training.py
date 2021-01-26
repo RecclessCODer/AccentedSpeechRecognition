@@ -53,8 +53,8 @@ def train(model, train_loader, criterion, optimizer, losses_mix=0.5):
                                                       transcripts_lens, losses_mix)
 
         optimizer.zero_grad()
-        loss.backward()
-        optimizer.step()
+        loss.backward()         # back-propagation
+        optimizer.step()        #
 
         l = loss.clone().item() if loss is not None else None
         lt = loss_text.clone().item() if loss_text is not None else None
