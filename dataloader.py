@@ -89,7 +89,9 @@ class MultiDataset(Dataset):
         """Maps a text to integers using the given labels_map."""
 
         with open(transcript_path, 'r', encoding='utf8') as transcript_file:
-            transcript = transcript_file.read().replace('\n', '')
+            transcript = transcript_file.read().replace('\n', '').upper()
+        # bug fix: transcripts were in small letter format, change all letters into capital
+        # letters in labels_map is capital
 
         transcript = list(filter(None, [self.labels_map.get(x) for x in list(transcript)]))
         return transcript
