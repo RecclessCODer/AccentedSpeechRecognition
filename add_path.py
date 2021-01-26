@@ -25,10 +25,6 @@ def write_csv_manifest(manifest, name):
     return 0
 
 
-def namestr(obj, namespace):
-    return [name for name in namespace if namespace[name] is obj]
-
-
 dev_data = read_csv_manifest('../../cv_corpus_v1/dev.csv')
 train_data = read_csv_manifest('../../cv_corpus_v1/train.csv')
 test_data = read_csv_manifest('../../cv_corpus_v1/test.csv')
