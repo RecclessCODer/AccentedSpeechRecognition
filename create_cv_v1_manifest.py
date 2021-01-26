@@ -1,7 +1,7 @@
 import json
 import librosa
 import pydub
-from utils import read_csv_manifest, write_csv_manifest
+from utils import read_csv_nt_manifest, write_csv_manifest
 
 
 def create_manifest(data):
@@ -52,12 +52,12 @@ def create_manifest(data):
 manifest_path = './data/'
 path_base = '../../cv_corpus_v1/'
 
-test_list = ['dev.csv', 'test.csv', 'testnz.csv', 'testindian.csv']
+test_list = ['testnz.csv', 'testindian.csv', 'dev.csv', 'test.csv', 'train']
 for test in test_list:
     mfcc_path = path_base + 'mfcc/' + test.split('.')[0] + '/'
     transcript_path = path_base + 'transcript/' + test.split('.')[0] + '/'
     wav_path = path_base + 'wav/' + test.split('.')[0] + '/'
-    accent_data = read_csv_manifest(manifest_path + test)
+    accent_data = read_csv_nt_manifest(manifest_path + test)
     new_list_t = create_manifest(accent_data)
     write_csv_manifest(new_list_t, test)
     print('each list length:')
