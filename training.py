@@ -102,7 +102,7 @@ def check_wer(transcripts, transcripts_lens, out, out_lens, decoder, target_deco
 
 
 def check_acc(accents, out):
-    out_arg = np.argmax(out, axis=1)
+    out_arg = np.argmax(out.cpu(), axis=1)
     diff = torch.eq(out_arg, accents.cpu())
     acc = torch.sum(diff)
     return acc.item() / len(accents) * 100
