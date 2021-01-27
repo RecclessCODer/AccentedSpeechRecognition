@@ -60,7 +60,7 @@ train_accent_list = read_accent_split_list('../../cv_corpus_v1/train')
 test_accent_list = read_accent_split_list('../../cv_corpus_v1/test')
 testnz_accent_list = read_accent_split_list('../../cv_corpus_v1/testnz')
 testindian_accent_list = read_accent_split_list('../../cv_corpus_v1/testindian')
-path_list = './data'
+path_list = './data/'
 
 dev_accent_data = extract_accent_data(dev_data)
 train_accent_data = extract_accent_data(train_data)

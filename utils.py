@@ -75,7 +75,7 @@ def read_csv_nt_manifest(path):
 def write_csv_manifest(manifest, path, name):
     """
     write manifest into a csv format.
-    stored in data/
+    stored in path
     """
     f = open(path + name, 'w', encoding='UTF-8')
     for i in range(0, len(manifest)):
