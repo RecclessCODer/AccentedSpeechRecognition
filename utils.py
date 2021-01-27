@@ -72,12 +72,12 @@ def read_csv_nt_manifest(path):
     return data
 
 
-def write_csv_manifest(manifest, name):
+def write_csv_manifest(manifest, path, name):
     """
     write manifest into a csv format.
     stored in data/
     """
-    f = open('./data/' + name, 'w', encoding='UTF-8')
+    f = open(path + name, 'w', encoding='UTF-8')
     for i in range(0, len(manifest)):
         line = manifest[i][0]
         for j in range(1, len(manifest[i])):  # create tsv format lines
