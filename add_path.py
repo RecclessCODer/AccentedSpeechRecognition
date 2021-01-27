@@ -40,5 +40,5 @@ for e_data in dev_data, train_data, test_data:
         temp = element[2]
         element[2] = element[4]
         element[4] = temp
-    write_csv_manifest(e_data, 'list_' + name_str(e_data, globals())[0])
+    write_csv_manifest(e_data, 'list_' + name_str(e_data, globals())[0] + '.csv')
 
