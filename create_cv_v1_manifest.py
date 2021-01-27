@@ -52,7 +52,7 @@ def create_manifest(data):
 manifest_path = './data/'
 path_base = '../../cv_corpus_v1/'
 
-test_list = ['testnz.csv', 'testindian.csv', 'dev.csv', 'test.csv', 'train']
+test_list = ['testnz.csv', 'testindian.csv', 'dev.csv', 'test.csv', 'train.csv']
 for test in test_list:
     mfcc_path = path_base + 'mfcc/' + test.split('.')[0] + '/'
     transcript_path = path_base + 'transcript/' + test.split('.')[0] + '/'
