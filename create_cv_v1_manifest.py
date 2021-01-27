@@ -59,7 +59,7 @@ for test in test_list:
     wav_path = path_base + 'wav/' + test.split('.')[0] + '/'
     accent_data = read_csv_nt_manifest(manifest_path + test)
     new_list_t = create_manifest(accent_data)
-    write_csv_manifest(new_list_t, test)
+    write_csv_manifest(new_list_t, path_base, test)
     print('each list length:')
     print(test)
     print(len(new_list_t))
