@@ -60,6 +60,7 @@ train_accent_list = read_accent_split_list('../../cv_corpus_v1/train')
 test_accent_list = read_accent_split_list('../../cv_corpus_v1/test')
 testnz_accent_list = read_accent_split_list('../../cv_corpus_v1/testnz')
 testindian_accent_list = read_accent_split_list('../../cv_corpus_v1/testindian')
+path_list = './data'
 
 dev_accent_data = extract_accent_data(dev_data)
 train_accent_data = extract_accent_data(train_data)
@@ -71,10 +72,10 @@ dev_accent_data = compare_list(dev_accent_data, train_accent_data, test_accent_d
 train_accent_data = compare_list(dev_accent_data, train_accent_data, test_accent_data, train_accent_list)
 test_accent_data = compare_list(dev_accent_data, train_accent_data, test_accent_data, test_accent_list)
 
-write_csv_manifest(testindian_accent_data, 'testindian.csv')
-write_csv_manifest(testnz_accent_data, 'testnz.csv')
-write_csv_manifest(dev_accent_data, 'dev.csv')
-write_csv_manifest(train_accent_data, 'train.csv')
-write_csv_manifest(test_accent_data, 'test.csv')
+write_csv_manifest(testindian_accent_data, path_list, 'testindian.csv')
+write_csv_manifest(testnz_accent_data, path_list, 'testnz.csv')
+write_csv_manifest(dev_accent_data, path_list, 'dev.csv')
+write_csv_manifest(train_accent_data, path_list, 'train.csv')
+write_csv_manifest(test_accent_data, path_list, 'test.csv')
 
 print("ok")
