@@ -2,7 +2,7 @@ from dataloader import MultiDataset, MultiDataLoader
 from focalloss import FocalLoss
 from model import MultiTask
 from decoder import GreedyDecoder, BeamCTCDecoder
-from training import train, test
+from training import train, validation
 import torch
 import torch.nn as nn
 from os import makedirs
@@ -184,7 +184,7 @@ def run_experiment(_exp_name,
 
         ### TEST
         print(f'Epoch {epoch} testing')
-        test_results = test(model, test_loader, criterion, decoder, target_decoder, losses_mix=_losses_mix)
+        test_results = validation(model, test_loader, criterion, decoder, target_decoder, losses_mix=_losses_mix)
         test_loss, test_loss_text, test_loss_accent, test_wer, test_accent_acc = test_results
 
         results_dict['test_loss'].append(test_loss)
@@ -195,7 +195,7 @@ def run_experiment(_exp_name,
         print(f'Epoch {epoch} testing loss: {test_loss}')
         print(f'Epoch {epoch} testing text loss: {test_loss_text}')
         print(f'Epoch {epoch} testing accent loss: {test_loss_accent}')
-        print(f'Epoch {epoch} testing wer acc: {test_wer}')
+        print(f'Epoch {epoch} testing wer : {test_wer}')
         print(f'Epoch {epoch} testing accent acc: {test_accent_acc}')
 
         # Add values to tensorboard

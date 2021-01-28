@@ -53,8 +53,8 @@ def train(model, train_loader, criterion, optimizer, losses_mix=0.5):
                                                       transcripts_lens, losses_mix)
 
         optimizer.zero_grad()
-        loss.backward()         # back-propagation
-        optimizer.step()        # optimize
+        loss.backward()  # back-propagation
+        optimizer.step()  # optimize
 
         l = loss.clone().item() if loss is not None else None
         lt = loss_text.clone().item() if loss_text is not None else None
@@ -138,6 +138,66 @@ def test(model, test_loader, criterion, decoder, target_decoder, losses_mix=0.5)
                                                               transcripts_lens, losses_mix)
             else:  # in that case we do not care about the loss, section to refactor.
                 loss, loss_text, loss_accent = torch.tensor([-1]), torch.tensor([-1]), torch.tensor([-1])
+
+            if out_text is not None:
+                wer = check_wer(transcripts, transcripts_lens,
+                                out_text, out_lens, decoder, target_decoder)
+            else:
+                wer = None
+
+            if out_accent is not None:
+                accent_acc = check_acc(accents, out_accent)
+            else:
+                accent_acc = None
+
+            l = loss.clone().item() if loss is not None else None
+            lt = loss_text.clone().item() if loss_text is not None else None
+            la = loss_accent.clone().item() if loss_accent is not None else None
+            epoch_losses.append(l)
+            epoch_losses_text.append(lt)
+            epoch_losses_accent.append(la)
+
+            epoch_wers.append(wer)
+            epoch_accent_accs.append(accent_acc)
+
+        average_loss = lambda l: sum(l) / len(test_loader) if l[0] is not None else -1
+
+        epoch_loss = average_loss(epoch_losses)
+        epoch_loss_text = average_loss(epoch_losses_text)
+        epoch_loss_accent = average_loss(epoch_losses_accent)
+
+        epoch_wer = average_loss(epoch_wers)
+        epoch_accent_acc = average_loss(epoch_accent_accs)
+
+    return epoch_loss, epoch_loss_text, epoch_loss_accent, epoch_wer, epoch_accent_acc
+
+
+def validation(model, test_loader, criterion, decoder, target_decoder, losses_mix=0.5):
+    with torch.no_grad():
+        model.eval()
+
+        epoch_losses = []
+        epoch_losses_text = []
+        epoch_losses_accent = []
+
+        epoch_wers = []
+        epoch_accent_accs = []
+
+        for data in tqdm(test_loader, total=len(test_loader)):
+            inputs, inputs_lens, transcripts, transcripts_lens, accents = data
+
+            if next(model.parameters()).is_cuda:
+                inputs = inputs.cuda()
+                inputs_lens = inputs_lens.cuda()
+
+                if accents is not None:
+                    accents = accents.cuda()
+
+            out_text, out_accent, out_lens, __ = model(inputs, inputs_lens)
+
+            loss, loss_text, loss_accent = get_mixed_loss(criterion, out_text, out_accent,
+                                                          out_lens, accents, transcripts,
+                                                          transcripts_lens, losses_mix)
 
             if out_text is not None:
                 wer = check_wer(transcripts, transcripts_lens,
