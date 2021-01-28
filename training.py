@@ -36,7 +36,7 @@ def train(model, train_loader, criterion, optimizer, losses_mix=0.5):
     model.train()
 
     for data in tqdm(train_loader, total=len(train_loader)):
-
+        # load a batch size data every time
         inputs, inputs_lens, transcripts, transcripts_lens, accents = data
 
         if next(model.parameters()).is_cuda:
@@ -54,7 +54,7 @@ def train(model, train_loader, criterion, optimizer, losses_mix=0.5):
 
         optimizer.zero_grad()
         loss.backward()         # back-propagation
-        optimizer.step()        #
+        optimizer.step()        # optimize
 
         l = loss.clone().item() if loss is not None else None
         lt = loss_text.clone().item() if loss_text is not None else None

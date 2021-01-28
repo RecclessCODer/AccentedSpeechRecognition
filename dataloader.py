@@ -164,7 +164,7 @@ def collate_fn(batch):
 
     # Outputs
     if exists(transcripts):
-        if inputs.size(0) == 1:  # bugfix for when only one sample
+        if inputs.size(0) == 1:  # bug fix for when only one sample
             transcripts = [transcripts]
         transcripts = np.asarray(transcripts)[sorted_idx] # dtype=object because some transcripts were loaded with wrong type (Int64). TODO fix.
         transcripts = torch.IntTensor([t for trs in transcripts for t in trs])

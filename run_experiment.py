@@ -193,6 +193,10 @@ def run_experiment(_exp_name,
         results_dict['test_wer'].append(test_wer)
         results_dict['test_accent_acc'].append(test_accent_acc)
         print(f'Epoch {epoch} testing loss: {test_loss}')
+        print(f'Epoch {epoch} testing text loss: {test_loss_text}')
+        print(f'Epoch {epoch} testing accent loss: {test_loss_accent}')
+        print(f'Epoch {epoch} testing wer acc: {test_wer}')
+        print(f'Epoch {epoch} testing accent acc: {test_accent_acc}')
 
         # Add values to tensorboard
         for key, results in results_dict.items():
