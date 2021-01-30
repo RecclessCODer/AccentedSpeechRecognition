@@ -88,4 +88,3 @@ class Config(collections.MutableMapping):
         
         return final_configs if len(final_configs) > 0 else self.store
 
-
