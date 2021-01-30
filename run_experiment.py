@@ -243,7 +243,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='DeepSpeech model information')
     parser.add_argument('--train', action='store_true', help='Uses the train set instead of the dev set.')
     parser.add_argument('--epochs', default=None, type=int, help='Number of training epochs')
-    parser.add_argument('--patch_path', default='experiments.cfg', type=str, help='Path to experiment list')
+    parser.add_argument('--patch_path', default='custom_experiments.cfg', type=str, help='Path to experiment list')
     args = parser.parse_args()
 
     DEV = not args.train
