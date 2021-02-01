@@ -5,7 +5,6 @@ from dataloader import MultiDataset, MultiDataLoader
 import torch.nn as nn
 import torch
 from focalloss import FocalLoss
-from warpctc_pytorch import CTCLoss
 from decoder import GreedyDecoder, BeamCTCDecoder
 import sys
 from pathlib import Path
@@ -60,9 +59,9 @@ def main(model_path, confs):
     if not model._meta['use_transcripts_out']:  # only accent classification
         criterion = nn.CrossEntropyLoss()
     elif not model._meta['use_accents_out']:  # only text recognition
-        criterion = CTCLoss()
+        criterion = nn.CTCLoss()
     else:  # both tasks
-        criterion = (CTCLoss(), nn.CrossEntropyLoss())
+        criterion = (nn.CTCLoss(), nn.CrossEntropyLoss())
 
     # Results
     results = {}
