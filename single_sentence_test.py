@@ -28,8 +28,8 @@ labels_map = dict([(labels[i], i) for i in range(len(labels))])  # labels dictio
 transcript_map = dict([(i, labels[i]) for i in range(len(labels))]) # token map to transcript
 transcript = list(filter(None, [labels_map.get(x) for x in list(transcript.upper())]))
 
-inputs = mfcc
-inputs_lens = len(mfcc)
+inputs = torch.tensor(mfcc)
+inputs_lens = torch.tensor(len(mfcc))
 transcript_lens = len(transcript)
 inputs = inputs.cuda()
 inputs_lens = inputs_lens.cuda()
