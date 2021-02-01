@@ -14,7 +14,7 @@ model = model.cuda()
 
 
 # mfcc extraction
-wav_path = '../../cv_corpus_v1/wav/dev/sample-000020.wav'
+wav_path = '../../cv_corpus_v1/wav/dev/cv-valid-dev-sample-000020.wav'
 transcript = 'coming home a party of tourists passed us singing and playing music'
 wav_signal, fs = librosa.load(wav_path, sr=None)
 mfccs = librosa.feature.mfcc(wav_signal, sr=fs, n_mfcc=40)  # extract mfcc
