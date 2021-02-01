@@ -16,20 +16,21 @@ def rnn_block(rnn_input_size, rnn_hidden_size, rnn_type, bidirectional, nb_layer
                        bidirectional=bidirectional)
         rnns.append(('%d' % (x + 1), rnn))
     return nn.Sequential(OrderedDict(rnns))
-        
-    
+
+
 class Head(nn.Module):
     """Shared part of the neural network."""
-    def __init__(self, 
-                 rnn_type, 
+
+    def __init__(self,
+                 rnn_type,
                  rnn_hidden_size,
-                 nb_layers, 
+                 nb_layers,
                  bidirectional,
                  feature_len,
                  DEBUG):
 
         super(Head, self).__init__()
-        
+
         self._DEBUG = DEBUG
 
         # CONV
@@ -60,7 +61,7 @@ class Head(nn.Module):
         x = x.transpose(2, 3)
         if self._DEBUG:
             print('after view transpose', x.size())
-            
+
         x, _ = self.conv(x, output_lengths)
         if self._DEBUG:
             print('after conv', x.size())
@@ -75,7 +76,7 @@ class Head(nn.Module):
             x = rnn(x, output_lengths)
         if self._DEBUG:
             print('after rnn', x.size())
-    
+
         self._DEBUG = False
         return x, output_lengths
 
@@ -94,24 +95,24 @@ class Head(nn.Module):
 
 
 class SpeechToText(nn.Module):
-    def __init__(self, 
-                 rnn_type, 
+    def __init__(self,
+                 rnn_type,
                  rnn_hidden_size,
-                 nb_layers, 
+                 nb_layers,
                  bidirectional,
                  labels,
                  DEBUG):
-    
+
         super(SpeechToText, self).__init__()
 
         self._DEBUG = DEBUG
 
         # RNN
         self.rnns = rnn_block(rnn_hidden_size, rnn_hidden_size, rnn_type, bidirectional, nb_layers)
-        
+
         # FULLY CO
         num_classes = len(labels)
-        
+
         fully_connected = nn.Sequential(
             nn.BatchNorm1d(rnn_hidden_size),
             nn.Linear(rnn_hidden_size, num_classes, bias=False)
@@ -121,23 +122,22 @@ class SpeechToText(nn.Module):
         )
         self.inference_softmax = InferenceBatchSoftmax()
 
-
     def forward(self, x, output_lengths):
         if self._DEBUG:
             print('')
             print('# BEGIN speech to text #')
             print('input', x.size())
-            
+
         for rnn in self.rnns:
             x = rnn(x, output_lengths)
-            
+
         if self._DEBUG:
             print('after rnn', x.size())
-        
+
         x = self.fc(x)
         if self._DEBUG:
             print('after fc', x.size())
-        
+
         x = x.transpose(0, 1)
         if self._DEBUG:
             print('after transpose', x.size())
@@ -145,35 +145,35 @@ class SpeechToText(nn.Module):
         x = self.inference_softmax(x)
         if self._DEBUG:
             print('after softmax', x.size())
-            
+
         x = x.transpose(0, 1)
         if self._DEBUG:
             print('after transpose', x.size())
-            
+
         self._DEBUG = False
         return x
 
 
 class AccentClassifier(nn.Module):
-    def __init__(self,   
-                 rnn_type, 
+    def __init__(self,
+                 rnn_type,
                  rnn_hidden_size,
-                 nb_layers, 
+                 nb_layers,
                  bidirectional,
                  accents_dict,
                  bottleneck_size,
                  DEBUG):
-        
+
         super(AccentClassifier, self).__init__()
-        
+
         self._DEBUG = DEBUG
-                
+
         # RNN
         self.rnns = rnn_block(rnn_hidden_size, rnn_hidden_size, rnn_type, bidirectional, nb_layers)
-            
+
         # FULLY CO
         num_classes = len(accents_dict)
-        
+
         self.bnf = nn.Sequential(
             nn.BatchNorm1d(rnn_hidden_size),
             nn.Linear(rnn_hidden_size, 1024),
@@ -182,85 +182,85 @@ class AccentClassifier(nn.Module):
             nn.Linear(1024, bottleneck_size),
             nn.ReLU(),
         )
-        
+
         self.fc = nn.Sequential(
             nn.BatchNorm1d(bottleneck_size),
             nn.Linear(bottleneck_size, num_classes),
             nn.ReLU(),
         )
-        
+
         self.softmax = nn.Softmax(dim=1)
 
-    def forward(self, x, output_lengths):     
+    def forward(self, x, output_lengths):
         if self._DEBUG:
             print('')
             print('# BEGIN Acc #')
             print('input', x.size())
-            
+
         for rnn in self.rnns:
             x = rnn(x, output_lengths)
-            
+
         if self._DEBUG:
             print('after rnn', x.size())
-            
+
         x = x.mean(dim=0)
-        
+
         if self._DEBUG:
             print('after mean', x.size())
-            
+
         bottleneck = self.bnf(x)
-        
+
         if self._DEBUG:
             print('after bnf', bottleneck.size())
-            
+
         x = self.fc(bottleneck)
-        
+
         if self._DEBUG:
             print('after fc', x.size())
-            
+
         x = self.softmax(x)
-        
+
         if self._DEBUG:
             print('after softmax', x.size())
-            
+
         self._DEBUG = False
         return x, bottleneck
 
 
 class MultiTask(nn.Module):
     def __init__(self,
-                use_mfcc_in=True, 
-                use_ivectors_in=True, 
-                use_embeddings_in=True,
-                use_transcripts_out=True, 
-                use_accents_out=True,
-                mfcc_size=40,
-                ivector_size=100,
-                embedding_size=100,
-                rnn_type=nn.GRU, 
-                labels="abc",
-                accents_dict={'uk', 'us'},
-                rnn_hidden_size=800, 
-                nb_head_layers=2,
-                nb_speech_layers=2,
-                nb_accents_layers=2,
-                bidirectional=True,
-                bottleneck_size=256,
-                DEBUG=False):
-        
+                 use_mfcc_in=True,
+                 use_ivectors_in=True,
+                 use_embeddings_in=True,
+                 use_transcripts_out=True,
+                 use_accents_out=True,
+                 mfcc_size=40,
+                 ivector_size=100,
+                 embedding_size=100,
+                 rnn_type=nn.GRU,
+                 labels="abc",
+                 accents_dict={'uk', 'us'},
+                 rnn_hidden_size=800,
+                 nb_head_layers=2,
+                 nb_speech_layers=2,
+                 nb_accents_layers=2,
+                 bidirectional=True,
+                 bottleneck_size=256,
+                 DEBUG=False):
+
         self._meta = {
-            'use_mfcc_in': use_mfcc_in, 
-            'use_ivectors_in': use_ivectors_in, 
+            'use_mfcc_in': use_mfcc_in,
+            'use_ivectors_in': use_ivectors_in,
             'use_embeddings_in': use_embeddings_in,
-            'use_transcripts_out': use_transcripts_out, 
+            'use_transcripts_out': use_transcripts_out,
             'use_accents_out': use_accents_out,
             'mfcc_size': mfcc_size,
             'ivector_size': ivector_size,
             'embedding_size': embedding_size,
-            'rnn_type': rnn_type, 
+            'rnn_type': rnn_type,
             'labels': labels,
             'accents_dict': accents_dict,
-            'rnn_hidden_size': rnn_hidden_size, 
+            'rnn_hidden_size': rnn_hidden_size,
             'nb_head_layers': nb_head_layers,
             'nb_speech_layers': nb_speech_layers,
             'nb_accents_layers': nb_accents_layers,
@@ -268,51 +268,50 @@ class MultiTask(nn.Module):
             'bottleneck_size': bottleneck_size,
             'DEBUG': DEBUG,
         }
-        
+
         super(MultiTask, self).__init__()
-            
+
         self.feature_len = 0
         self.feature_len += mfcc_size if use_mfcc_in else 0
         self.feature_len += ivector_size if use_ivectors_in else 0
         self.feature_len += embedding_size if use_embeddings_in else 0
-            
-        self.Head = Head(rnn_type=rnn_type, 
+
+        self.Head = Head(rnn_type=rnn_type,
                          rnn_hidden_size=rnn_hidden_size,
-                         nb_layers=nb_head_layers, 
+                         nb_layers=nb_head_layers,
                          bidirectional=bidirectional,
                          feature_len=self.feature_len,
                          DEBUG=DEBUG)
-            
+
         if self._meta['use_transcripts_out']:
-            self.SpeechToText = SpeechToText(rnn_type=rnn_type, 
+            self.SpeechToText = SpeechToText(rnn_type=rnn_type,
                                              rnn_hidden_size=rnn_hidden_size,
-                                             nb_layers=nb_speech_layers, 
+                                             nb_layers=nb_speech_layers,
                                              bidirectional=bidirectional,
                                              labels=labels,
                                              DEBUG=DEBUG)
-            
+
         if self._meta['use_accents_out']:
-            self.AccentClassifier = AccentClassifier(rnn_type=rnn_type, 
-                                        rnn_hidden_size=rnn_hidden_size,
-                                        nb_layers=nb_accents_layers, 
-                                        bidirectional=bidirectional,
-                                        accents_dict=accents_dict,
-                                        bottleneck_size=bottleneck_size,
-                                        DEBUG=DEBUG)
-        
+            self.AccentClassifier = AccentClassifier(rnn_type=rnn_type,
+                                                     rnn_hidden_size=rnn_hidden_size,
+                                                     nb_layers=nb_accents_layers,
+                                                     bidirectional=bidirectional,
+                                                     accents_dict=accents_dict,
+                                                     bottleneck_size=bottleneck_size,
+                                                     DEBUG=DEBUG)
+
     def forward(self, x, lengths):
         x, out_len = self.Head(x, lengths)
         x_stt, x_acc, bnf = None, None, None
-        
+
         if self._meta['use_transcripts_out']:
             x_stt = self.SpeechToText(x, out_len)
-            
+
         if self._meta['use_accents_out']:
             x_acc, bnf = self.AccentClassifier(x, out_len)
-            
+
         return x_stt, x_acc, out_len, bnf
-    
-    
+
     @staticmethod
     def get_param_size(model):
         params = 0
@@ -322,40 +321,40 @@ class MultiTask(nn.Module):
                 tmp *= x
             params += tmp
         return params
-    
+
     @classmethod
     def load_model(cls, path):
         package = torch.load(path, map_location=lambda storage, loc: storage)
         meta = package['meta']
         model = cls(
-            use_mfcc_in = meta['use_mfcc_in'], 
-            use_ivectors_in = meta['use_ivectors_in'], 
-            use_embeddings_in = meta['use_embeddings_in'],
-            use_transcripts_out = meta['use_transcripts_out'], 
-            use_accents_out = meta['use_accents_out'],
-            mfcc_size = meta['mfcc_size'],
-            ivector_size = meta['ivector_size'],
-            embedding_size = meta['embedding_size'],
-            rnn_type = meta['rnn_type'], 
-            labels = meta['labels'],
-            accents_dict = meta['accents_dict'],
-            rnn_hidden_size = meta['rnn_hidden_size'], 
-            nb_head_layers = meta['nb_head_layers'],
-            nb_speech_layers = meta['nb_speech_layers'],
-            nb_accents_layers = meta['nb_accents_layers'],
-            bidirectional = meta['bidirectional'],
-            bottleneck_size = meta['bottleneck_size'],
-            DEBUG = meta['DEBUG'],
+            use_mfcc_in=meta['use_mfcc_in'],
+            use_ivectors_in=meta['use_ivectors_in'],
+            use_embeddings_in=meta['use_embeddings_in'],
+            use_transcripts_out=meta['use_transcripts_out'],
+            use_accents_out=meta['use_accents_out'],
+            mfcc_size=meta['mfcc_size'],
+            ivector_size=meta['ivector_size'],
+            embedding_size=meta['embedding_size'],
+            rnn_type=meta['rnn_type'],
+            labels=meta['labels'],
+            accents_dict=meta['accents_dict'],
+            rnn_hidden_size=meta['rnn_hidden_size'],
+            nb_head_layers=meta['nb_head_layers'],
+            nb_speech_layers=meta['nb_speech_layers'],
+            nb_accents_layers=meta['nb_accents_layers'],
+            bidirectional=meta['bidirectional'],
+            bottleneck_size=meta['bottleneck_size'],
+            DEBUG=meta['DEBUG'],
         )
         model.load_state_dict(package['state_dict'])
         return model, package
-        
+
     @staticmethod
-    def serialize(model, 
+    def serialize(model,
                   path='./__temp__',
                   save=True,
                   exp_name=None,
-                  optimizer=None, 
+                  optimizer=None,
                   epoch=None,
                   train_losses=None,
                   test_losses=None,
@@ -365,15 +364,15 @@ class MultiTask(nn.Module):
                   accent_train_losses=None,
                   accent_test_losses=None,
                   accent_accuracies=None):
-        
+
         """Saves the model in a packaged form. Also returns the package.
         Use the load_model class method to recreate a model from a package."""
-        
+
         package = {
             'state_dict': model.state_dict(),
             'meta': model._meta
         }
-        
+
         if exp_name is not None:
             package['exp_name'] = exp_name
         if optimizer is not None:
@@ -396,8 +395,8 @@ class MultiTask(nn.Module):
             package['accent_test_losses'] = accent_test_losses
         if accent_accuracies is not None:
             package['accent_accuracies'] = accent_accuracies
-            
+
         if save:
             torch.save(package, str(path) + '.pth')
-            
+
         return package

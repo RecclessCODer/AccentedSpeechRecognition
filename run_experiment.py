@@ -182,7 +182,7 @@ def run_experiment(_exp_name,
         results_dict['train_loss_accent'].append(train_loss_accent)
         print(f'Epoch {epoch} training loss: {train_loss}')
 
-        ### TEST
+        ### validation
         print(f'Epoch {epoch} testing')
         test_results = validation(model, test_loader, criterion, decoder, target_decoder, losses_mix=_losses_mix)
         test_loss, test_loss_text, test_loss_accent, test_wer, test_accent_acc = test_results
