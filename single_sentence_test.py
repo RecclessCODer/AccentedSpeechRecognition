@@ -11,7 +11,7 @@ model_path = './saved_models/TrainMulti_TRAIN__in_mfcc__out_transcripts_accents-
 
 model, __ = MultiTask.load_model(model_path)
 model = model.cuda()
-
+test_dev_manifest = './data/CommonVoice_dataset/splits/dev.csv'
 
 # mfcc extraction
 wav_path = '../../cv_corpus_v1/wav/dev/cv-valid-dev-sample-000020.wav'
@@ -20,7 +20,6 @@ wav_signal, fs = librosa.load(wav_path, sr=None)
 mfccs = librosa.feature.mfcc(wav_signal, sr=fs, n_mfcc=40)  # extract mfcc
 mfccs = mfccs.T  # transpose. first axis is frames, second axis is mfcc dimensions.
 mfcc = mfccs.tolist()
-print(mfcc)
 
 # token
 labels = "_'ABCDEFGHIJKLMNOPQRSTUVWXYZ "
@@ -49,12 +48,13 @@ decoder = BeamCTCDecoder(labels,
 target_decoder = GreedyDecoder(labels)
 split_transcripts = []
 offset = 0
+
+
 for size in transcript_lens:
     split_transcripts.append(transcript[offset:offset + size])
     offset += size
 decoded_output, _ = decoder.decode(out_text.data.transpose(0, 1), out_lens)
 target_strings = target_decoder.convert_to_strings(split_transcripts)
-
 
 # output
 print(model._meta['accents_dict'])
