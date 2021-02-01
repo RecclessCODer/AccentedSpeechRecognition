@@ -7,7 +7,7 @@ import sys
 from pathlib import Path
 import librosa
 
-model_path = './saved_model/TrainMulti_TRAIN__in_mfcc__out_transcripts_accents-mix1.0-CE__nblyrs-head-4-speech-1-accent-1__bnf-256__31-01-2021_18h54m38.pth'
+model_path = './saved_model/'
 
 model, __ = MultiTask.load_model(model_path)
 model = model.cuda()
