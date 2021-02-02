@@ -24,7 +24,7 @@ mfcc = mfccs.tolist()
 # token
 labels = "_'ABCDEFGHIJKLMNOPQRSTUVWXYZ "
 labels_map = dict([(labels[i], i) for i in range(len(labels))])  # labels dictionary
-transcript_map = dict([(i, labels[i]) for i in range(len(labels))]) # token map to transcript
+transcript_map = dict([(i, labels[i]) for i in range(len(labels))])  # token map to transcript
 transcript = list(filter(None, [labels_map.get(x) for x in list(transcript.upper())]))
 
 inputs = torch.tensor(mfcc)
@@ -35,6 +35,7 @@ inputs = inputs.cuda()
 inputs_lens = inputs_lens.cuda()
 
 # forward
+model.eval()
 out_text, out_accent, out_lens, __ = model(inputs, inputs_lens)
 
 # decode
@@ -49,7 +50,6 @@ decoder = BeamCTCDecoder(labels,
 target_decoder = GreedyDecoder(labels)
 split_transcripts = []
 offset = 0
-
 
 for size in transcript_lens:
     split_transcripts.append(transcript[offset:offset + size])
