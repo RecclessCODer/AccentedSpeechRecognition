@@ -29,7 +29,7 @@ transcript = list(filter(None, [labels_map.get(x) for x in list(transcript.upper
 
 inputs = torch.tensor(mfcc)
 
-inputs_lens = torch.tensor(len(mfcc, 2))
+inputs_lens = torch.tensor(len(mfcc))
 transcript_lens = len(transcript)
 inputs = inputs.cuda()
 inputs_lens = inputs_lens.cuda()
