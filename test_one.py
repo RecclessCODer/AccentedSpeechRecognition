@@ -21,7 +21,6 @@ model_path = './saved_models/TrainMulti_TRAIN__in_mfcc__out_transcripts_accents-
 lm = './data/language_models/cv.lm'
 
 
-
 test_dataset = MultiDataset(_test_manifest,
                             _labels,
                             use_mfcc_in=_use_mfcc_in,
@@ -76,7 +75,7 @@ with torch.no_grad():
         print('Reference:')
         print(target_strings)
         print('\n')
-        print('Ground Truth:' + transcripts.upper())
+
 
 
 
