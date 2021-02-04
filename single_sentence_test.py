@@ -11,7 +11,6 @@ model_path = './saved_models/TrainMulti_TRAIN__in_mfcc__out_transcripts_accents-
 
 model, __ = MultiTask.load_model(model_path)
 model = model.cuda()
-test_dev_manifest = './data/CommonVoice_dataset/splits/dev.csv'
 
 # mfcc extraction
 wav_path = '../../cv_corpus_v1/wav/dev/cv-valid-dev-sample-000020.wav'
