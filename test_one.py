@@ -70,6 +70,7 @@ with torch.no_grad():
             offset += size
 
         decoded_output, _ = decoder.decode(out_text.data.transpose(0, 1), out_lens)
+        print(decoded_output)
         target_strings = target_decoder.convert_to_strings(split_transcripts)
         print('Reference:')
         print(target_strings)
