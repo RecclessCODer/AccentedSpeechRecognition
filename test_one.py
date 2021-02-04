@@ -16,8 +16,7 @@ _use_transcripts_out = True
 _use_accents_out = True
 _batch_size = 1
 _num_workers = 4
-model_path = './saved_models/TrainMulti_TRAIN__in_mfcc__out_transcripts_accents-' \
-             'mix1.0-CE__nblyrs-head-4-speech-1-accent-1__bnf-256__31-01-2021_18h54m38.pth'
+model_path = './saved_models/TrainMulti_TRAIN__in_mfcc__out_transcripts_accents-mix0.9-CE__nblyrs-head-4-speech-1-accent-1__bnf-256__02-02-2021_03h36m39.pth'
 lm = './data/language_models/cv.lm'
 
 
