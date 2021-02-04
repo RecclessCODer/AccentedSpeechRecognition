@@ -63,19 +63,18 @@ with torch.no_grad():
 
         # forward
         out_text, out_accent, out_lens, __ = model(inputs, inputs_lens)
-
         print(out_text, out_accent, out_lens)
 
-# decode
-split_transcripts = []
-offset = 0
-for size in transcripts_lens:
-    split_transcripts.append(transcripts[offset:offset + size])
-    offset += size
+        # decode
+        split_transcripts = []
+        offset = 0
+        for size in transcripts_lens:
+            split_transcripts.append(transcripts[offset:offset + size])
+            offset += size
 
-decoded_output, _ = decoder.decode(out_text.data.transpose(0, 1), out_lens)
-target_strings = target_decoder.convert_to_strings(split_transcripts)
-print(target_strings)
+        decoded_output, _ = decoder.decode(out_text.data.transpose(0, 1), out_lens)
+        target_strings = target_decoder.convert_to_strings(split_transcripts)
+        print(target_strings)
 
 
 
