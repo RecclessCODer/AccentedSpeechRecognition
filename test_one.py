@@ -74,7 +74,8 @@ with torch.no_grad():
 
         decoded_output, _ = decoder.decode(out_text.data.transpose(0, 1), out_lens)
         target_strings = target_decoder.convert_to_strings(split_transcripts)
-        print(target_strings)
+        print('Reference:' + target_strings)
+        print('Ground Truth:' + transcripts.upper())
 
 
 
