@@ -5,7 +5,7 @@ import gc
 
 
 def get_mixed_loss(criterion, out_text, out_accent, out_lens, accents, transcripts, transcripts_lens, mix=0.5,
-                   corrective_coef=1000):
+                   corrective_coef=1):
     loss, loss_text, loss_accent = None, None, None
 
     if out_text is None:
