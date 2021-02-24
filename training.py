@@ -47,9 +47,9 @@ def train(model, train_loader, criterion, optimizer, losses_mix=0.5):
                 accents = accents.cuda()
 
         out_text, out_accent, out_lens, __ = model(inputs, inputs_lens)
-        out_text = out_text.log_softmax(2)
+        out_text_log = out_text.log_softmax(2)
 
-        loss, loss_text, loss_accent = get_mixed_loss(criterion, out_text, out_accent,
+        loss, loss_text, loss_accent = get_mixed_loss(criterion, out_text_log, out_accent,
                                                       out_lens, accents, transcripts,
                                                       transcripts_lens, losses_mix)
 
@@ -131,11 +131,11 @@ def test(model, test_loader, criterion, decoder, target_decoder, losses_mix=0.5)
                     accents = accents.cuda()
 
             out_text, out_accent, out_lens, __ = model(inputs, inputs_lens)
-            out_text = out_text.log_softmax(2)
+            out_text_log = out_text.log_softmax(2)
 
             if accents is None or len(model._meta['accents_dict']) > max(
                     accents) + 1:  # Check if we are testing a model with different accents
-                loss, loss_text, loss_accent = get_mixed_loss(criterion, out_text, out_accent,
+                loss, loss_text, loss_accent = get_mixed_loss(criterion, out_text_log, out_accent,
                                                               out_lens, accents, transcripts,
                                                               transcripts_lens, losses_mix)
             else:  # in that case we do not care about the loss, section to refactor.
@@ -196,9 +196,9 @@ def validation(model, test_loader, criterion, decoder, target_decoder, losses_mi
                     accents = accents.cuda()
 
             out_text, out_accent, out_lens, __ = model(inputs, inputs_lens)
-            out_text = out_text.log_softmax(2)
+            out_text_log = out_text.log_softmax(2)
 
-            loss, loss_text, loss_accent = get_mixed_loss(criterion, out_text, out_accent,
+            loss, loss_text, loss_accent = get_mixed_loss(criterion, out_text_log, out_accent,
                                                           out_lens, accents, transcripts,
                                                           transcripts_lens, losses_mix)
 
