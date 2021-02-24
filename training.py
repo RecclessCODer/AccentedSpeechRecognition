@@ -47,6 +47,7 @@ def train(model, train_loader, criterion, optimizer, losses_mix=0.5):
                 accents = accents.cuda()
 
         out_text, out_accent, out_lens, __ = model(inputs, inputs_lens)
+        out_text = out_text.log_softmax(2)
 
         loss, loss_text, loss_accent = get_mixed_loss(criterion, out_text, out_accent,
                                                       out_lens, accents, transcripts,
@@ -130,6 +131,7 @@ def test(model, test_loader, criterion, decoder, target_decoder, losses_mix=0.5)
                     accents = accents.cuda()
 
             out_text, out_accent, out_lens, __ = model(inputs, inputs_lens)
+            out_text = out_text.log_softmax(2)
 
             if accents is None or len(model._meta['accents_dict']) > max(
                     accents) + 1:  # Check if we are testing a model with different accents
@@ -194,6 +196,7 @@ def validation(model, test_loader, criterion, decoder, target_decoder, losses_mi
                     accents = accents.cuda()
 
             out_text, out_accent, out_lens, __ = model(inputs, inputs_lens)
+            out_text = out_text.log_softmax(2)
 
             loss, loss_text, loss_accent = get_mixed_loss(criterion, out_text, out_accent,
                                                           out_lens, accents, transcripts,
