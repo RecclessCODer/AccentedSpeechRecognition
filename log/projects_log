@@ -1,19 +1,24 @@
-Python-tips  print()函数使用时，打印长文中，可采用双括号{}，圈住需要打印的变量。
+# This file is to record some logs or notes about debugging and testing
+###issue
+@@@answer/solution
+***tips
+$$$others
 
-AccentedSpeechRecognition ###https://github.com/SilvrDuck/AccentedSpeechRecognition
+***Python-tips  print()函数使用时，打印长文中，可采用双括号{}，圈住需要打印的变量。
 
+***AccentedSpeechRecognition ###https://github.com/SilvrDuck/AccentedSpeechRecognition
 
-torch.nn.Module
+***torch.nn.Module
     Base class for all neural network modules. 所有神经网络模块的父类，基本类
     Your models should also subclass this class. 你的模型应为此模块的子类
 
 
-torch.nn.Sequential
+***torch.nn.Sequential
     A sequential container. 一个有顺序的容器
     Modules will be added to it in the order they are passed in the constructor. 模块将按照在构造函数中传递的顺序添加到模块中。
 
 
-继承写法
+***继承写法
     class Person(object):
         def __init__(self, name, age):
             self.name = name
@@ -26,10 +31,10 @@ torch.nn.Sequential
     2.新式类的写法：super(子类，self).__init__(参数1，参数2，....)
 
 
-data preparation dataloader.py
-torch.utils.data DataLoader
+***data preparation dataloader.py
+    torch.utils.data DataLoader
 
-Python assert
+***Python assert
     （断言）用于判断一个表达式，在表达式条件为 false 的时候触发异常。
     $ assert expression
     等价于
@@ -38,24 +43,24 @@ Python assert
     expression为False，抛出异常
 
 
-Python argparse
+***Python argparse
     python从命令行读取参数。argparse 会自动生成帮助文档，-h为短写。
     https://www.jianshu.com/p/a41fbd4919f8
 
 
-$ self.config = {}
+*** self.config = {}
     dictionary构造一个字典（关键字->键值，key->value）
-$ self.labels_map = dict([(labels[i], i) for i in range(len(labels))])
+*** self.labels_map = dict([(labels[i], i) for i in range(len(labels))])
     构造函数 dict() 直接从键值对元组列表中构建字典。 如 labels_map {'i am here': 1, 'where you at': 2}
 
-$ self.samples = [x.strip().split(manifest_separator) for x in f.readlines()]
+*** self.samples = [x.strip().split(manifest_separator) for x in f.readlines()]
     构建samples list，每一行为list中的一个对象，按照manifest_separator（已设置成','）来分割
     Python strip() 方法用于移除字符串头尾指定的字符（默认为空格或换行符）或字符序列。
     注意：该方法只能删除开头或是结尾的字符，不能删除中间部分的字符。
     Python split() 通过指定分隔符对字符串进行切片，如果参数 num 有指定值，则分隔 num+1 个子字符串
 
 
-.tsv以及.csv格式文件
+***.tsv以及.csv格式文件
     TSV：tab separated values；即“制表符分隔值”，如：
     name    age
     张三      20
@@ -66,49 +71,49 @@ $ self.samples = [x.strip().split(manifest_separator) for x in f.readlines()]
     李四,30
 
 
-###
- $ from warpctc_pytorch import CTCLoss  ?
-旧版本的torch，warpctc_pytorch；新的版本（torch 1.2.0）torch.nn.CTCLoss
-Levenshtein python library ?
-!pip install python-Levenshtein
+### from warpctc_pytorch import CTCLoss  ?
+    旧版本的torch，warpctc_pytorch；新的版本（torch 1.2.0）torch.nn.CTCLoss
+    Levenshtein python library ?
+    !pip install python-Levenshtein
 
 
 
-$$$
-　データの前処理　data preproccessing
-1　生波形を40次元MFCCsに変換する  kaldi tool spafe?
-2　アクセントによってデータのマニフェストを作る　data split
-how to random them into paralleled data
+###  データの前処理　data preproccessing
+    1　生波形を40次元MFCCsに変換する  kaldi tool spafe?
+    2　アクセントによってデータのマニフェストを作る　data split
+    how to random them into paralleled data
 
-accent_sentence_count
-{'african': 10531, 1%
-***'australia': 83933, 8.3%
-'bermuda': 797, 0.07%
-***'canada': 64860, 6.4%
-***'england': 167886, 16.5%
-'hongkong': 3776, 0.4%
-***'indian': 94835,  9.3% unseen_accent_test_set
-'ireland': 14163, 1.4%
-'malaysia': 2126, 0.2%
-'newzealand': 16062, 1.58
-'philippines': 5809, 0.6%
-'scotland': 21360, 2.1%
-'singapore': 5846, 0.6%
-'southatlandtic': 213, 0.02%
-***'us': 520682,  51.3%
-'wales': 1950, 0.2%}
-all 1014829
+    accent_sentence_count
+    {'african': 10531, 1%
+    ***'australia': 83933, 8.3%
+    'bermuda': 797, 0.07%
+    ***'canada': 64860, 6.4%
+    ***'england': 167886, 16.5%
+    'hongkong': 3776, 0.4%
+    ***'indian': 94835,  9.3% unseen_accent_test_set
+    'ireland': 14163, 1.4%
+    'malaysia': 2126, 0.2%
+    'newzealand': 16062, 1.58
+    'philippines': 5809, 0.6%
+    'scotland': 21360, 2.1%
+    'singapore': 5846, 0.6%
+    'southatlandtic': 213, 0.02%
+    ***'us': 520682,  51.3%
+    'wales': 1950, 0.2%}
+    all 1014829
 
-train_set 90%
-dev_set 3%
-test_set 3%
-test_unseen_accent_set
-'scotland': 21360, 2.1%
-'ireland': 14163, 1.4%
+    train_set 90%
+    dev_set 3%
+    test_set 3%
+    test_unseen_accent_set
+    'scotland': 21360, 2.1%
+    'ireland': 14163, 1.4%
 
-    ERROR: Command errored out with exit status 1:
-     command: 'D:\Anacoda\envs\pytorch\python.exe' -c 'import sys, setuptools, tokenize; sys.argv[0] = '"'"'C:\\Users\\IBOUGH~1\\AppData\\Local\\Temp\\pip-req-build-axk1p3dl\\setup.py'"'"'; __file__='"'"'C:\\Users\\IBOUGH~1\\AppData\\Local\\Temp\\pip-req-build-axk1
-p3dl\\setup.py'"'"';f=getattr(tokenize, '"'"'open'"'"', open)(__file__);code=f.read().replace('"'"'\r\n'"'"', '"'"'\n'"'"');f.close();exec(compile(code, __file__, '"'"'exec'"'"'))' egg_info --egg-base 'C:\Users\IBOUGH~1\AppData\Local\Temp\pip-pip-egg-info-21i78kdi'
+*** ERROR: Command errored out with exit status 1:
+    command: 'D:\Anacoda\envs\pytorch\python.exe' -c 'import sys, setuptools, tokenize; sys.argv[0] = '"'"'C:\\Users\\
+    IBOUGH~1\\AppData\\Local\\Temp\\pip-req-build-axk1p3dl\\setup.py'"'"'; __file__='"'"'C:\\Users\\IBOUGH~1\\AppData\\Local\\Temp\\pip-req-build-axk1
+    p3dl\\setup.py'"'"';f=getattr(tokenize, '"'"'open'"'"', open)(__file__);code=f.read().replace('"'"'\r\n'"'"', '"'"'\n'"'"');f.close();
+    exec(compile(code, __file__, '"'"'exec'"'"'))' egg_info --egg-base 'C:\Users\IBOUGH~1\AppData\Local\Temp\pip-pip-egg-info-21i78kdi'
 
          cwd: C:\Users\IBOUGH~1\AppData\Local\Temp\pip-req-build-axk1p3dl\
     Complete output (15 lines):
@@ -132,42 +137,49 @@ ocator_type_const___.html'
 ERROR: Command errored out with exit status 1: python setup.py egg_info Check the logs for full command output.
 
 
-1. local variable 'target_decoder' referenced before assignment
-fix
+*** local variable 'target_decoder' referenced before assignment
+    fix.
 
 
-2. float division by zero
-where?
-training.py:143 wer = check_wer(transcripts, transcripts_lens, out_text, out_lens, decoder, target_decoder)
-check function
-fix with 3
+*** float division by zero
+    where?
+    training.py:143 wer = check_wer(transcripts, transcripts_lens, out_text, out_lens, decoder, target_decoder)
+    check function
+    fix. with 3
 
 
-3.transcripts token id [28, 28, 28, 28, 28]?
-dataloader.py:94 transcript = list(filter(None, [self.labels_map.get(x) for x in list(transcript)]))
-labels_map.get(x) Mismatch issue capital letter and small letter
-fix  str.upper() change all letter into capital letter.
+*** transcripts token id [28, 28, 28, 28, 28]?
+    dataloader.py:94 transcript = list(filter(None, [self.labels_map.get(x) for x in list(transcript)]))
+    @@@ labels_map.get(x) Mismatch issue capital letter and small letter
+        fix.  str.upper() change all letter into capital letter.
 
 
-4.can't convert cuda: 0 device type tensor to numpy. Use Tensor.cpu() to copy the tensor to host memory first.
-training.py:105 out_arg = np.argmax(out, axis=1)
-Use Tensor.cpu() out.cpu()
+*** can't convert cuda: 0 device type tensor to numpy. Use Tensor.cpu() to copy the tensor to host memory first.
+    training.py:105 out_arg = np.argmax(out, axis=1)
+    @@@ fix. Use Tensor.cpu() out.cpu()
 
 
-5.No such file or directory: saved_models/"experiment name"
-mkdir saved_models
+*** No such file or directory: saved_models/"experiment name"
+    @@@ fix. mkdir saved_models
 
 
-6.warning: masked_fill_ received a mask with dtype torch.uint8, this behavior is now deprecated, please use a mask with dtype torch.bool instead. (function masked_fill__cuda)
-fix  set mask to bool()   mask=blablabla.bool()
+*** warning: masked_fill_ received a mask with dtype torch.uint8, this behavior is now deprecated, please use a mask with dtype torch.bool instead. (function masked_fill__cuda)
+    @@@ fix.  set mask to bool()   mask=blablabla.bool()
 
 
-7.test loss: -1.0 ?  test and dev is not fit
-fix  define loss = tensor([-1])
+*** test loss: -1.0 ?  test and dev is not fit
+    @@@ fix.  define loss = tensor([-1])
 
 
-8.test and validation (development)
+*** test and validation (development)
 
 
-9.
+*** ctcloss return negative values
+    @@@ torch.nn.CTCLoss() require log probabilities (T,N,C)
+        T refers length of sequences
+        N refers batch size
+        C refers length of subword/phoneme dictionary
+        fix. call log_softmax() to regularize the values in output to [0,1].
+
+$$$ TODO: insert a GAN into model. HOW?
 
