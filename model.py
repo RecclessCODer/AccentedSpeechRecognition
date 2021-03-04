@@ -1,9 +1,10 @@
 import math
 import torch
 import torch.nn as nn
+from torch import tensor
 from collections import OrderedDict
 from modules import MaskConv, BatchRNN, InferenceBatchSoftmax, SequenceWise
-
+from torch.autograd import Function
 
 def rnn_block(rnn_input_size, rnn_hidden_size, rnn_type, bidirectional, nb_layers):
     """Creates a stack of Batch RNNs with different input_size than hidden_size."""
@@ -227,6 +228,20 @@ class AccentClassifier(nn.Module):
         return x, bottleneck
 
 
+class RevGrad(Function):
+    @staticmethod
+    def forward(ctx, input):
+        return input
+
+    @staticmethod
+    def backward(ctx, grad_output):  # pragma: no cover
+        return - grad_output
+
+
+def gradient_reversal_layer(x):
+    return RevGrad.apply(x)
+
+
 class MultiTask(nn.Module):
     def __init__(self,
                  use_mfcc_in=True,
@@ -308,7 +323,8 @@ class MultiTask(nn.Module):
             x_stt = self.SpeechToText(x, out_len)
 
         if self._meta['use_accents_out']:
-            x_acc, bnf = self.AccentClassifier(x, out_len)
+            temp_x = gradient_reversal_layer(x)
+            x_acc, bnf = self.AccentClassifier(temp_x, out_len)
 
         return x_stt, x_acc, out_len, bnf
 
@@ -400,3 +416,4 @@ class MultiTask(nn.Module):
             torch.save(package, str(path) + '.pth')
 
         return package
+
