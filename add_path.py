@@ -32,8 +32,10 @@ def name_str(obj, namespace):
 dev_data = read_csv_manifest('../../cv_corpus_v1/dev.csv')
 train_data = read_csv_manifest('../../cv_corpus_v1/train.csv')
 test_data = read_csv_manifest('../../cv_corpus_v1/test.csv')
+testindian_data = read_csv_manifest('../../cv_corpus_v1/testindian.csv')
+testnz_data = read_csv_manifest('../../cv_corpus_v1/testnz.csv')
 
-for e_data in dev_data, train_data, test_data:
+for e_data in dev_data, train_data, test_data, testindian_data, testnz_data:
     for element in e_data:
         element.append('ivector_path')
         element.append('embedding_path')
