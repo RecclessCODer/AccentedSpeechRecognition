@@ -9,7 +9,7 @@ from decoder import GreedyDecoder, BeamCTCDecoder
 import sys
 from pathlib import Path
 
-PRINT_LATEX_TABLE = True
+PRINT_LATEX_TABLE = False
 
 manual_seed = 666
 torch.manual_seed(manual_seed)
