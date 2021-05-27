@@ -8,6 +8,7 @@ from decoder import GreedyDecoder, BeamCTCDecoder
 
 _test_manifest = './data/test_one.csv'
 _labels = "_'ABCDEFGHIJKLMNOPQRSTUVWXYZ "
+_accent_dict = 'australia,canada,england,us,ireland,scotland,wales'
 _use_mfcc_in = True
 _use_ivectors_in = False
 _use_embeddings_in = False
@@ -16,12 +17,13 @@ _use_transcripts_out = True
 _use_accents_out = True
 _batch_size = 1
 _num_workers = 4
-model_path = './saved_models/TrainMulti_TRAIN__in_mfcc__out_transcripts_accents-mix0.9-CE__nblyrs-head-4-speech-1-accent-1__bnf-256__02-02-2021_03h36m39.pth'
+model_path = './saved_models/TrainMulti_TRAIN__in_mfcc__out_transcripts_accents-mix0.5-focal__nblyrs-head-3-speech-2-accent-2__bnf-256__24-05-2021_18h27m26.pth'
 lm = './data/language_models/cv.lm'
 
 
 test_dataset = MultiDataset(_test_manifest,
                             _labels,
+                            _accent_dict=_accent_dict,
                             use_mfcc_in=_use_mfcc_in,
                             use_ivectors_in=_use_ivectors_in,
                             use_embeddings_in=_use_embeddings_in,

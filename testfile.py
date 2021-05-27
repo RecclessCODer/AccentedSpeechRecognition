@@ -146,7 +146,15 @@ def parse_transcript(self, transcript_path):
 
     transcript = list(filter(None, [self.labels_map.get(x) for x in list(transcript)]))
     return transcript
+
+
+def read_accent_split_list(path):
+    with open(path, encoding='UTF-8') as f:
+        accent_list = [line.strip().split(' ') for line in f.readlines()]
+    return accent_list
+
 """
+
 
 def read_csv_manifest(path):
     """
@@ -155,7 +163,7 @@ def read_csv_manifest(path):
     small_data = []
     segment = ""
     with open(path, encoding='UTF-8') as f:
-        f.readline()
+        # f.readline() 
         # data_key = f.readline().strip().split('\t')  # keys' names
         data = [line.strip().split(',') for line in f.readlines()]  # samples list
     # append an empty segment string to which does not have one, to keep the size of info same.
@@ -165,30 +173,32 @@ def read_csv_manifest(path):
     return data
 
 
-def read_accent_split_list(path):
-    with open(path, encoding='UTF-8') as f:
-        accent_list = [line.strip().split(' ') for line in f.readlines()]
-    return accent_list
+def make_accent_dict(samples):
+    acc_set = set()
+    for element in samples:
+        accent = element[2]
+        acc_set.add(accent)
+    enum = enumerate(sorted(acc_set))  # sorted set for consistent results
+    return {acc: i for i, acc in enum}
 
-
-train_accent_data = read_csv_manifest('./data/train.csv')
-train_accent_list = read_accent_split_list('../../cv_corpus_v1/train')
-print(len(train_accent_list))
+train_accent_data = read_csv_manifest('../../cv_corpus_v1/train.csv')
+train_accent_data_accent_dict = make_accent_dict(train_accent_data)
 print(len(train_accent_data))
+print(train_accent_data_accent_dict)
 
-test_accent_data = read_csv_manifest('./data/test.csv')
-test_accent_list = read_accent_split_list('../../cv_corpus_v1/test')
-print(len(test_accent_list))
+test_accent_data = read_csv_manifest('../../cv_corpus_v1/test.csv')
+test_accent_data_accent_dict = make_accent_dict(test_accent_data)
 print(len(test_accent_data))
+print(test_accent_data_accent_dict)
 
+dev_accent_data = read_csv_manifest('../../cv_corpus_v1/dev.csv')
+dev_accent_data_accent_dict = make_accent_dict(dev_accent_data)
+print(len(dev_accent_data))
+print(dev_accent_data_accent_dict)
 
-
-
-
-
-
-
-
-
-
+accent_dict = 'australia,canada,england,us,ireland,scotland,wales'
+accent_dict = accent_dict.strip().split(',')
+enum = enumerate(accent_dict)
+accent_dict = {acc: i for i, acc in enum}
+print(accent_dict)
 

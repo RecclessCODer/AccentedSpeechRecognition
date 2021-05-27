@@ -9,7 +9,7 @@ from decoder import GreedyDecoder, BeamCTCDecoder
 import sys
 from pathlib import Path
 
-PRINT_LATEX_TABLE = True
+PRINT_LATEX_TABLE = False
 
 manual_seed = 666
 torch.manual_seed(manual_seed)
@@ -21,10 +21,11 @@ def eprint(*args, **kwargs):
     print(*args, file=sys.stderr, **kwargs)
 
 
-def result_for_manifest(model, criterion, manifest, decoder, target_decoder, batch_size, num_workers):
+def result_for_manifest(model, criterion, manifest, decoder, target_decoder, batch_size, num_workers, _accent_dict):
     ### LOADER
     test_dataset = MultiDataset(manifest,
                                 model._meta['labels'],
+                                _accent_dict,
                                 use_mfcc_in=model._meta['use_mfcc_in'],
                                 use_ivectors_in=model._meta['use_ivectors_in'],
                                 use_embeddings_in=model._meta['use_embeddings_in'],
@@ -85,7 +86,7 @@ def main(model_path, confs):
 
         # Test
         results[manifest.split('/')[-1]] = result_for_manifest(model, criterion, manifest, decoder, target_decoder,
-                                                               confs['batch_size'], confs['num_workers'])
+                                                        confs['batch_size'], confs['num_workers'],confs['accent_dict'], )
 
     if not PRINT_LATEX_TABLE:
         print(f'Model: {model_path.split("/")[-1]}')
