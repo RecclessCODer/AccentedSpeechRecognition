@@ -15,7 +15,7 @@ class MultiDataset(Dataset):
     the MultiDataLoader class.
     """
 
-    def __init__(self, manifest, labels, manifest_separator=',',  # modify manifest_separator , -> ,
+    def __init__(self, manifest, labels, _accent_dict, manifest_separator=',',  # modify manifest_separator , -> ,
                use_mfcc_in=True, use_ivectors_in=False, use_embeddings_in=False,
                embedding_size=100, use_transcripts_out=True, use_accents_out=False):
         """
@@ -47,7 +47,10 @@ class MultiDataset(Dataset):
             # self.data_key = f.readline().strip().split(manifest_separator)  # keys' names
             self.samples = [x.strip().split(manifest_separator) for x in f.readlines()]  # x samples list
 
-        self.accent_dict = self.make_accent_dict(self.samples)
+        # self.accent_dict = self.make_accent_dict(self.samples) 
+        accent_dict = _accent_dict.strip().split(',')
+        enum = enumerate(accent_dict)
+        self.accent_dict = {acc: i for i, acc in enum}
 
     def __getitem__(self, index):
         """Unused features are set to None for the Dataloader. Returns torch tensors."""
@@ -100,7 +103,8 @@ class MultiDataset(Dataset):
         return len(self.samples)
 
     @staticmethod
-    def make_accent_dict(samples):
+    def make_accent_dict(samples): 
+        # deprecated method, train_set dict may be different from test_set dict
         acc_set = set()
         for element in samples:
             accent = element[4]

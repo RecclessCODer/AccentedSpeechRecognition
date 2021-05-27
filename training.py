@@ -47,9 +47,10 @@ def train(model, train_loader, criterion, optimizer, losses_mix=0.5):
                 accents = accents.cuda()
 
         out_text, out_accent, out_lens, __ = model(inputs, inputs_lens)
-        out_text_log = out_text.log_softmax(2)
+        if out_text is not None:
+            out_text = out_text.log_softmax(2)
 
-        loss, loss_text, loss_accent = get_mixed_loss(criterion, out_text_log, out_accent,
+        loss, loss_text, loss_accent = get_mixed_loss(criterion, out_text, out_accent,
                                                       out_lens, accents, transcripts,
                                                       transcripts_lens, losses_mix)
 
@@ -103,11 +104,24 @@ def check_wer(transcripts, transcripts_lens, out, out_lens, decoder, target_deco
 
 
 def check_acc(accents, out):
-    out_arg = np.argmax(out.cpu(), axis=1)
-    diff = torch.eq(out_arg, accents.cpu())
+    out_arg = np.argmax(out.cpu(), axis=1) # get references number
+    diff = torch.eq(out_arg, accents.cpu()) # output a tensor with (True 1/False 0)
     acc = torch.sum(diff)
     return acc.item() / len(accents) * 100
 
+def check_acc_weird(accents, out):
+    """
+    In train set the label of accent us, is 5.
+    But in test set (actually file name is dev set), 
+    the label of accent us , is 3.
+    fix this next time
+    """
+    accents = accents.cpu()
+    accents = torch.where(accents==3, 5, accents)
+    out_arg = np.argmax(out.cpu(), axis=1)
+    diff = torch.eq(out_arg, accents)
+    acc = torch.sum(diff)
+    return acc.item() / len(accents) * 100
 
 def test(model, test_loader, criterion, decoder, target_decoder, losses_mix=0.5):
     with torch.no_grad():
@@ -131,11 +145,12 @@ def test(model, test_loader, criterion, decoder, target_decoder, losses_mix=0.5)
                     accents = accents.cuda()
 
             out_text, out_accent, out_lens, __ = model(inputs, inputs_lens)
-            out_text_log = out_text.log_softmax(2)
+            if out_text is not None:
+                out_text = out_text.log_softmax(2)
 
             if accents is None or len(model._meta['accents_dict']) > max(
                     accents) + 1:  # Check if we are testing a model with different accents
-                loss, loss_text, loss_accent = get_mixed_loss(criterion, out_text_log, out_accent,
+                loss, loss_text, loss_accent = get_mixed_loss(criterion, out_text, out_accent,
                                                               out_lens, accents, transcripts,
                                                               transcripts_lens, losses_mix)
             else:  # in that case we do not care about the loss, section to refactor.
@@ -148,7 +163,7 @@ def test(model, test_loader, criterion, decoder, target_decoder, losses_mix=0.5)
                 wer = None
 
             if out_accent is not None:
-                accent_acc = check_acc(accents, out_accent)
+                accent_acc = check_acc_weird(accents, out_accent)
             else:
                 accent_acc = None
 
@@ -196,9 +211,10 @@ def validation(model, test_loader, criterion, decoder, target_decoder, losses_mi
                     accents = accents.cuda()
 
             out_text, out_accent, out_lens, __ = model(inputs, inputs_lens)
-            out_text_log = out_text.log_softmax(2)
+            if out_text is not None:
+                out_text = out_text.log_softmax(2)
 
-            loss, loss_text, loss_accent = get_mixed_loss(criterion, out_text_log, out_accent,
+            loss, loss_text, loss_accent = get_mixed_loss(criterion, out_text, out_accent,
                                                           out_lens, accents, transcripts,
                                                           transcripts_lens, losses_mix)
 

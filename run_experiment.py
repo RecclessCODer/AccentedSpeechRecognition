@@ -36,6 +36,7 @@ def run_experiment(_exp_name,
                    _train_manifest,
                    _test_manifest,
                    _labels,
+                   _accent_dict,
                    _use_mfcc_in,
                    _use_ivectors_in,
                    _use_embeddings_in,
@@ -79,6 +80,7 @@ def run_experiment(_exp_name,
     # Training set
     train_dataset = MultiDataset(_train_manifest,
                                  _labels,
+                                _accent_dict=_accent_dict,
                                  use_mfcc_in=_use_mfcc_in,
                                  use_ivectors_in=_use_ivectors_in,
                                  use_embeddings_in=_use_embeddings_in,
@@ -94,6 +96,7 @@ def run_experiment(_exp_name,
     # Testing set
     test_dataset = MultiDataset(_test_manifest,
                                 _labels,
+                                _accent_dict=_accent_dict,
                                 use_mfcc_in=_use_mfcc_in,
                                 use_ivectors_in=_use_ivectors_in,
                                 use_embeddings_in=_use_embeddings_in,
@@ -125,7 +128,7 @@ def run_experiment(_exp_name,
                       nb_accents_layers=_nb_accents_layers,
                       bidirectional=_bidirectional,
                       bottleneck_size=_bottleneck_size,
-                      DEBUG=False)
+                      DEBUG=True)
     if _cuda:
         model = model.cuda()
 
@@ -279,6 +282,7 @@ if __name__ == '__main__':
                            _train_manifest=train_manifest,
                            _test_manifest=conf['test_manifest'],
                            _labels=conf['labels'],
+                           _accent_dict=conf['accent_dict'],
                            _use_mfcc_in=conf['use_mfcc_in'],
                            _use_ivectors_in=conf['use_ivectors_in'],
                            _use_embeddings_in=conf['use_embeddings_in'],
